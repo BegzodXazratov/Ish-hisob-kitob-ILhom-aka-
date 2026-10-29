@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1f3a2e">
+<title>Hisob-kitob · Kitob do'koni</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- KIRISH -->
+<section id="login" class="login hidden">
+  <form id="loginForm" class="login-card" autocomplete="off">
+    <div class="logo">📚</div>
+    <h1>Kitob do'koni</h1>
+    <p class="muted">Harajatlar hisob-kitobi</p>
+    <label class="field">
+      <span>Parol</span>
+      <input id="loginPw" type="password" inputmode="text" placeholder="Parolni kiriting" required autofocus>
+    </label>
+    <button class="btn primary block" type="submit" id="loginBtn">Kirish</button>
+    <p id="loginErr" class="err"></p>
+  </form>
+</section>
+
+<!-- ASOSIY ILOVA -->
+<div id="app" class="hidden">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-ico">📚</span>
+      <div>
+        <strong>Kitob do'koni</strong>
+        <small id="todayLabel"></small>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="settingsBtn" title="Sozlamalar" aria-label="Sozlamalar">⚙︎</button>
+      <button class="out-btn" id="logoutBtn">Chiqish</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-tab="home">Bugun</button>
+    <button class="tab" data-tab="report">Hisobot</button>
+    <button class="tab" data-tab="templates">Shablonlar</button>
+  </nav>
+
+  <main>
+    <!-- BUGUN -->
+    <section class="view" id="view-home">
+      <div class="stats">
+        <div class="stat big">
+          <span>Bugungi harajat</span>
+          <strong id="sToday">—</strong>
+          <small id="sTodayCount"></small>
+        </div>
+        <div class="stat">
+          <span>Kecha</span>
+          <strong id="sYesterday">—</strong>
+        </div>
+        <div class="stat">
+          <span id="sMonthLabel">Shu oy</span>
+          <strong id="sMonth">—</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Doimiy harajatlar</h2>
+          <button class="link" data-goto="templates">Boshqarish</button>
+        </div>
+        <p class="muted small">Bir bosishda bugungi harajatga qo'shiladi</p>
+        <div id="quickTemplates" class="chips"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Bugungi yozuvlar</h2></div>
+        <div id="todayList" class="list"></div>
+      </div>
+    </section>
+
+    <!-- HISOBOT -->
+    <section class="view hidden" id="view-report">
+      <div class="card">
+        <div class="seg" id="periodSeg">
+          <button data-mode="day" class="active">Kun</button>
+          <button data-mode="month">Oy</button>
+          <button data-mode="range">Oraliq</button>
+        </div>
+        <div class="period-inputs">
+          <div data-for="day"><input type="date" id="pDay"></div>
+          <div data-for="month" class="hidden"><input type="month" id="pMonth"></div>
+          <div data-for="range" class="hidden range">
+            <input type="date" id="pFrom"><span>—</span><input type="date" id="pTo">
+          </div>
+        </div>
+        <div class="presets">
+          <button data-preset="today">Bugun</button>
+          <button data-preset="yesterday">Kecha</button>
+          <button data-preset="week">Oxirgi 7 kun</button>
+          <button data-preset="month">Shu oy</button>
+          <button data-preset="lastmonth">O'tgan oy</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat big">
+          <span id="rTitle">Jami</span>
+          <strong id="rTotal">—</strong>
+          <small id="rSub"></small>
+        </div>
+        <div class="stat"><span>Yozuvlar</span><strong id="rCount">—</strong></div>
+        <div class="stat"><span>Kunlik o'rtacha</span><strong id="rAvg">—</strong></div>
+      </div>
+
+      <div class="card" id="dailyCard">
+        <div class="card-head"><h2>Kunlar kesimida</h2></div>
+        <div id="dailyChart" class="daily"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Turlar bo'yicha</h2></div>
+        <div id="catBreak" class="bars"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Barcha yozuvlar</h2>
+          <button class="link" id="csvBtn">Excel (CSV) yuklash</button>
+        </div>
+        <div id="reportList" class="list"></div>
+      </div>
+    </section>
+
+    <!-- SHABLONLAR -->
+    <section class="view hidden" id="view-templates">
+      <div class="card">
+        <div class="card-head">
+          <h2>Shablonlar (doimiy harajatlar)</h2>
+          <button class="btn small" id="newTplBtn">+ Yangi</button>
+        </div>
+        <p class="muted small">Ijara, svet, ish haqi kabi takrorlanadigan harajatlarni bir marta yozib qo'ying — keyin bir bosishda qo'shasiz.</p>
+        <div id="tplList" class="list"></div>
+      </div>
+    </section>
+  </main>
+
+  <button class="fab" id="addBtn"><span>+</span> Harajat qo'shish</button>
+</div>
+
+<!-- HARAJAT OYNASI -->
+<dialog id="expDlg" class="sheet">
+  <form id="expForm" method="dialog">
+    <div class="sheet-head">
+      <h3 id="expTitle">Harajat qo'shish</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Yopish">✕</button>
+    </div>
+
+    <div id="expTplWrap">
+      <span class="lbl">Shablondan tanlash</span>
+      <div id="expTplChips" class="chips scroll"></div>
+    </div>
+
+    <label class="field">
+      <span>Summa (so'm)</span>
+      <input id="eAmount" class="amount" inputmode="numeric" placeholder="0" required>
+    </label>
+
+    <span class="lbl">Harajat turi</span>
+    <div id="eCats" class="chips wrap"></div>
+    <input id="eCatCustom" class="hidden mt" placeholder="Boshqa tur nomi">
+
+    <label class="field">
+      <span>Izoh</span>
+      <textarea id="eNote" rows="2" placeholder="Masalan: 20 ta daftar, Sharq nashriyotidan kitoblar…"></textarea>
+    </label>
+
+    <div class="row2">
+      <label class="field">
+        <span>Sana</span>
+        <input id="eDate" type="date" required>
+      </label>
+      <label class="field">
+        <span>To'lov</span>
+        <select id="eMethod">
+          <option value="naqd">Naqd</option>
+          <option value="karta">Karta</option>
+          <option value="otkazma">O'tkazma</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="check" id="eSaveTplWrap">
+      <input type="checkbox" id="eSaveTpl"> Shablon (doimiy harajat) sifatida ham saqlash
+    </label>
+
+    <p id="expErr" class="err"></p>
+    <div class="sheet-actions">
+      <button type="button" class="btn danger hidden" id="eDelete">O'chirish</button>
+      <button type="submit" class="btn primary" id="eSave">Saqlash</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- SHABLON OYNASI -->
+<dialog id="tplDlg" class="sheet">
+  <form id="tplForm" method="dialog">
+    <div class="sheet-head">
+      <h3 id="tplTitle">Yangi shablon</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Yopish">✕</button>
+    </div>
+    <label class="field"><span>Nomi</span><input id="tName" required placeholder="Masalan: Do'kon ijarasi"></label>
+    <label class="field"><span>Odatdagi summa (so'm)</span><input id="tAmount" class="amount" inputmode="numeric" placeholder="0"></label>
+    <span class="lbl">Harajat turi</span>
+    <div id="tCats" class="chips wrap"></div>
+    <input id="tCatCustom" class="hidden mt" placeholder="Boshqa tur nomi">
+    <label class="field"><span>Izoh</span><input id="tNote" placeholder="Ixtiyoriy"></label>
+    <p id="tplErr" class="err"></p>
+    <div class="sheet-actions">
+      <button type="button" class="btn danger hidden" id="tDelete">O'chirish</button>
+      <button type="submit" class="btn primary">Saqlash</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- SOZLAMALAR -->
+<dialog id="setDlg" class="sheet">
+  <form id="setForm" method="dialog">
+    <div class="sheet-head">
+      <h3>Parolni o'zgartirish</h3>
+      <button type="button" class="icon-btn" data-close aria-label="Yopish">✕</button>
+    </div>
+    <label class="field"><span>Hozirgi parol</span><input id="sOld" type="password" required></label>
+    <label class="field"><span>Yangi parol</span><input id="sNew" type="password" required minlength="4"></label>
+    <label class="field"><span>Yangi parol (takror)</span><input id="sNew2" type="password" required minlength="4"></label>
+    <p class="muted small">Parol o'zgargach boshqa qurilmalardan qaytadan kirish kerak bo'ladi.</p>
+    <p id="setErr" class="err"></p>
+    <div class="sheet-actions"><button type="submit" class="btn primary">O'zgartirish</button></div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
